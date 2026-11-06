@@ -50,6 +50,18 @@ _Avoid_: Error, drift, offset
 A period when the app was deliberately stopped from recording while the Subject Phone stayed on; distinct from the phone being off.
 _Avoid_: Pause, outage, missing data
 
+**Recording Mode**:
+The app running on the Subject Phone itself, recording its battery; chosen once, when the app is first opened.
+_Avoid_: Diagnostics mode, diagnosis mode
+
+**Investigation Mode**:
+The app running on another phone, only displaying an imported Export; it records nothing and needs no permissions.
+_Avoid_: Viewer mode, analysis mode
+
+**Export**:
+A file holding everything recorded on a Subject Phone plus that phone's model and Design Capacity, made to be sent to an Analyst.
+_Avoid_: Dump, backup, log file
+
 ### Roles
 
 **Subject Phone**:

@@ -7,6 +7,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.PowerManager
 import android.os.Process
+import com.akiva.batterydebugger.AppMode
 import com.akiva.batterydebugger.data.BatteryDatabase
 import com.akiva.batterydebugger.data.Marker
 import com.akiva.batterydebugger.data.MarkerType
@@ -57,6 +58,7 @@ object Recorder {
 
     /** A boot always resumes recording, even after a stop. */
     suspend fun onBoot(context: Context) {
+        if (AppMode.get(context) != AppMode.RECORDING) return
         mark(context, MarkerType.BOOT)
         if (!setupStatus(context).complete) return
         setRecording(context, true)

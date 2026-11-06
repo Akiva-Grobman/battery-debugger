@@ -70,4 +70,18 @@
     <string name="state_charging">בטעינה</string>
     <string name="state_plugged_not_charging">מחובר, לא בטעינה</string>
     <string name="state_on_battery">על סוללה</string>
+    <string name="mode_title">איך ישמש הטלפון הזה?</string>
+    <string name="mode_once">הבחירה נעשית פעם אחת ולא ניתן לשנות אותה אחר כך.</string>
+    <string name="mode_recording">הקלטת הטלפון הזה</string>
+    <string name="mode_recording_detail">מצב הקלטה: זה הטלפון עם בעיית הסוללה. האפליקציה מקליטה את הסוללה ברקע וצריכה כמה הרשאות.</string>
+    <string name="mode_investigation">חקירת קובץ ייצוא</string>
+    <string name="mode_investigation_detail">מצב חקירה: צפייה בקובץ ייצוא שנשלח מטלפון אחר. לא מקליט כלום ולא צריך הרשאות.</string>
+    <string name="tab_latest">אחרון</string>
+    <string name="action_open_export">פתיחת קובץ ייצוא…</string>
+    <string name="investigate_empty">פתחו קובץ ייצוא שנשלח מהטלפון הנבדק.</string>
+    <string name="open_failed">לא ניתן לפתוח את הקובץ: %1$s</string>
+    <string name="export_file">קובץ: %1$s</string>
+    <string name="export_device">%1$s · Android %2$s · יוצא ב-%3$s</string>
+    <string name="design_capacity">קיבולת מקורית: %1$d mAh</string>
+    <string name="capacity_assumed">בקובץ אין פרטי מכשיר; מניחים Pixel 9 Pro (%1$d mAh).</string>
 </resources>

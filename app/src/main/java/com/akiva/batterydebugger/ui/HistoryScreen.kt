@@ -107,7 +107,7 @@ private data class SeriesColors(
 
 @Composable
 private fun LevelChart(data: Analysed, windowMs: Long, colors: SeriesColors) {
-    val endMs = System.currentTimeMillis()
+    val endMs = data.endMs
     val startMs = endMs - windowMs
     val indices = data.samples.indices.filter { data.samples[it].timestampMs >= startMs }
 

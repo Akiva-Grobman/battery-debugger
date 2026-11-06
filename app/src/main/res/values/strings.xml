@@ -70,4 +70,18 @@
     <string name="state_charging">Charging</string>
     <string name="state_plugged_not_charging">Plugged in, not charging</string>
     <string name="state_on_battery">On battery</string>
+    <string name="mode_title">How will this phone be used?</string>
+    <string name="mode_once">This is chosen once and can\'t be changed later.</string>
+    <string name="mode_recording">Record this phone</string>
+    <string name="mode_recording_detail">Recording Mode: this is the phone with the battery problem. It records the battery in the background and needs a few permissions.</string>
+    <string name="mode_investigation">Investigate an export</string>
+    <string name="mode_investigation_detail">Investigation Mode: view an export sent from another phone. Records nothing and needs no permissions.</string>
+    <string name="tab_latest">Latest</string>
+    <string name="action_open_export">Open export…</string>
+    <string name="investigate_empty">Open an export file sent from the phone being diagnosed.</string>
+    <string name="open_failed">Couldn\'t open that file: %1$s</string>
+    <string name="export_file">File: %1$s</string>
+    <string name="export_device">%1$s · Android %2$s · exported %3$s</string>
+    <string name="design_capacity">Design capacity: %1$d mAh</string>
+    <string name="capacity_assumed">The export has no device info; assuming a Pixel 9 Pro (%1$d mAh).</string>
 </resources>

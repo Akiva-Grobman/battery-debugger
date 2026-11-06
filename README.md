@@ -7,7 +7,9 @@ the percentage the phone displays with independent estimates:
 - **From voltage** — cell voltage at light load mapped onto a typical lithium-ion curve (approximate, ±10 points).
 - **Current-counted** — charge actually drawn since the last full charge, against the battery's design capacity.
 
-It flags sudden drops, shows the history, and exports everything as CSV. The estimate is also shown in the
+It flags sudden drops, shows the history, and exports everything as CSV. On first launch you choose
+**Recording Mode** (this is the phone with the problem) or **Investigation Mode** (open an export sent from
+another phone; no permissions needed). The estimate is also shown in the
 recording notification. Built for a Pixel 9 Pro; the design capacity is set in `domain/Analysis.kt`.
 Domain vocabulary is in [CONTEXT.md](CONTEXT.md). UI in English and Hebrew.
 

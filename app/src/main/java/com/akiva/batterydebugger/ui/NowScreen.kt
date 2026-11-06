@@ -18,7 +18,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.akiva.batterydebugger.R
-import com.akiva.batterydebugger.data.MarkerType
 import com.akiva.batterydebugger.domain.Thresholds
 import com.akiva.batterydebugger.domain.chargeDerivedLevel
 import com.akiva.batterydebugger.domain.dischargeUa
@@ -26,20 +25,12 @@ import com.akiva.batterydebugger.domain.learnedToDesignRatio
 import com.akiva.batterydebugger.domain.timeLeftAtCurrentDrawMs
 
 @Composable
-fun NowScreen(data: Analysed, recording: Boolean) {
+fun NowScreen(data: Analysed, banner: @Composable () -> Unit = {}) {
     Column(
         Modifier.verticalScroll(rememberScrollState()).padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
-        if (!recording) {
-            val stoppedAt = data.markers.lastOrNull { it.type == MarkerType.RECORDING_STOPPED }?.timestampMs
-            Card(colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.errorContainer)) {
-                Text(
-                    stringResource(R.string.stopped_since, stoppedAt?.let(::formatTime) ?: "—"),
-                    Modifier.padding(16.dp).fillMaxWidth(),
-                )
-            }
-        }
+        banner()
 
         val latest = data.samples.lastOrNull()
         if (latest == null) {
@@ -95,14 +86,27 @@ fun NowScreen(data: Analysed, recording: Boolean) {
 
         Section(stringResource(R.string.section_time_left)) {
             Field(stringResource(R.string.system_predicts), formatDuration(latest.dischargePredictionMs))
-            Field(stringResource(R.string.at_current_draw), formatDuration(timeLeftAtCurrentDrawMs(latest, coulomb)))
+            Field(stringResource(R.string.at_current_draw), formatDuration(timeLeftAtCurrentDrawMs(latest, coulomb, data.designCapacityUah)))
         }
 
         Section(stringResource(R.string.section_health)) {
             Field(stringResource(R.string.cycle_count), latest.cycleCount?.toString() ?: "—")
             Field(stringResource(R.string.state_of_health), latest.stateOfHealth?.let { "$it%" } ?: "—")
-            Field(stringResource(R.string.learned_vs_design), learnedToDesignRatio(data.samples)?.let { "%.0f%%".format(it * 100) } ?: "—")
+            Field(stringResource(R.string.learned_vs_design), learnedToDesignRatio(data.samples, data.designCapacityUah)?.let { "%.0f%%".format(it * 100) } ?: "—")
         }
+    }
+}
+
+/** A full-width notice above the Now/Latest cards. */
+@Composable
+fun Banner(text: String, warning: Boolean = false) {
+    val colors = if (warning) {
+        CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.errorContainer)
+    } else {
+        CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer)
+    }
+    Card(colors = colors) {
+        Text(text, Modifier.padding(16.dp).fillMaxWidth())
     }
 }
 

@@ -34,8 +34,11 @@ object Thresholds {
     const val VOLTAGE_MAX_DRAW_UA = 300_000L
 }
 
-/** Design Capacity as reported by the Subject Phone's own gauge (charge_full_design). */
-const val DESIGN_CAPACITY_UAH = 4_800_000L
+/**
+ * Design Capacity assumed when recording, and for Exports that don't state one: a Pixel 9 Pro, as
+ * reported by its own gauge (charge_full_design). No public API exposes the real value.
+ */
+const val DEFAULT_DESIGN_CAPACITY_UAH = 4_800_000L
 
 // ---------------------------------------------------------------- sampling
 
@@ -184,7 +187,12 @@ fun dischargeUa(sample: Sample): Long? {
  * Level Estimate per sample: Design Capacity at the last 100%, minus current integrated since.
  * Measured against Design Capacity rather than the charge counter, which this phone's gauge corrupts.
  */
-fun coulombCountedLevels(samples: List<Sample>, markers: List<Marker>, nowMs: Long): List<Double?> {
+fun coulombCountedLevels(
+    samples: List<Sample>,
+    markers: List<Marker>,
+    nowMs: Long,
+    designCapacityUah: Long = DEFAULT_DESIGN_CAPACITY_UAH,
+): List<Double?> {
     val gaps = recordingGaps(markers, nowMs)
     val boots = markers.filter { it.type == MarkerType.BOOT }.map { it.timestampMs }
     val result = ArrayList<Double?>(samples.size)
@@ -193,7 +201,7 @@ fun coulombCountedLevels(samples: List<Sample>, markers: List<Marker>, nowMs: Lo
     for (s in samples) {
         val p = prev
         if (s.displayedLevel == 100) {
-            remainingUah = DESIGN_CAPACITY_UAH.toDouble()
+            remainingUah = designCapacityUah.toDouble()
         } else if (p != null && remainingUah != null) {
             val dt = s.timestampMs - p.timestampMs
             val inGap = gaps.any { it.first < s.timestampMs && it.last > p.timestampMs }
@@ -210,7 +218,7 @@ fun coulombCountedLevels(samples: List<Sample>, markers: List<Marker>, nowMs: Lo
                 else -> remainingUah - (i0 + i1) / 2.0 * dt / HOUR_MS
             }
         }
-        result += remainingUah?.let { it * 100.0 / DESIGN_CAPACITY_UAH }
+        result += remainingUah?.let { it * 100.0 / designCapacityUah }
         prev = s
     }
     return result
@@ -257,16 +265,16 @@ private fun counterDeltaUah(a: Sample, b: Sample, dt: Long): Double? {
 }
 
 /** How long the coulomb-counted remaining charge would last if the current draw continued. */
-fun timeLeftAtCurrentDrawMs(sample: Sample, coulombCountedLevel: Double?): Long? {
+fun timeLeftAtCurrentDrawMs(sample: Sample, coulombCountedLevel: Double?, designCapacityUah: Long): Long? {
     val level = coulombCountedLevel ?: return null
     val draw = dischargeUa(sample) ?: return null
     if (sample.plugged != 0 || draw <= 0) return null
-    return (level / 100 * DESIGN_CAPACITY_UAH / draw * HOUR_MS).toLong()
+    return (level / 100 * designCapacityUah / draw * HOUR_MS).toLong()
 }
 
 /** Learned Full Charge as a fraction of Design Capacity; well above 1 means the gauge is confused. */
-fun learnedToDesignRatio(samples: List<Sample>): Double? =
-    learnedFullChargeUah(samples)?.let { it.toDouble() / DESIGN_CAPACITY_UAH }
+fun learnedToDesignRatio(samples: List<Sample>, designCapacityUah: Long): Double? =
+    learnedFullChargeUah(samples)?.let { it.toDouble() / designCapacityUah }
 
 // ---------------------------------------------------------------- daily drain
 
